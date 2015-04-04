@@ -3,9 +3,9 @@ package cse4471.shouldersurf;
 import android.app.Activity;
 import android.hardware.Camera;
 
-import android.os.Bundle;
+
 import android.util.Log;
-import android.widget.FrameLayout;
+
 
 
 /**
