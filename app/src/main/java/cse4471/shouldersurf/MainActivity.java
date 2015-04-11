@@ -32,6 +32,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //this will be called by the background service to get the current app.
+    // current this logic is within the service for testing purposes.
     public String getCurrentApp(){
         Context context = this;
         String currentApp = null;
