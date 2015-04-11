@@ -42,7 +42,7 @@ public class CurrentAppReporter extends IntentService {
     //used for others services to connect to this one but since we don't need that return null.
     @Override
     public IBinder onBind(Intent intent){return null;}
-
+//
     @Override
     public void onCreate(){
         super.onCreate();
