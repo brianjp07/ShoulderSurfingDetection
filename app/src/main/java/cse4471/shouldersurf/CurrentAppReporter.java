@@ -20,6 +20,7 @@ import java.util.TimerTask;
 public class CurrentAppReporter extends IntentService {
     private static final String serviceName = CurrentAppReporter.class.getSimpleName();
     private Timer timer;
+    //this timer is not working for somer reason
     private TimerTask updateTask = new TimerTask(){
         @Override
         public void run(){
