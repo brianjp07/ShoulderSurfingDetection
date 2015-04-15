@@ -26,6 +26,8 @@ public class MainActivity extends ActionBarActivity {
         Context context = this;
         Intent serviceIntent = new Intent(context,CurrentAppReporter.class);
         //serviceIntent.setAction("cse4471.shouldersurf.CurrentAppReporter");
+
+
         startService(serviceIntent);
 
 
