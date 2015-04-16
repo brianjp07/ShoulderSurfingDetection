@@ -5,6 +5,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -86,7 +87,18 @@ public class MainActivity extends ActionBarActivity {
                 if(watchedApps.contains(ap.processName)){
                     //start the controller.
                     Log.i(ap.processName,"detected as foreground, the camera should open");
-                   //fdController.safeCameraOpen(0);
+                    int cameraId = -1;
+                    int numberOfCameras = Camera.getNumberOfCameras();
+                    for (int i = 0; i < numberOfCameras; i++) {
+                        Camera.CameraInfo info = new Camera.CameraInfo();
+                        Camera.getCameraInfo(i, info);
+                        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                            Log.d("it was", "Camera found");
+                            cameraId = i;
+                            break;
+                        }
+                    }
+                   //fdController.safeCameraOpen(cameraId);
                    //fdController.createCameraSession();
                    //fdController.startFaceDetection();
                 }
