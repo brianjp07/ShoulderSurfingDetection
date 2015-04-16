@@ -10,6 +10,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -25,6 +30,9 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         //look  at the logs to see result.
         //getCurrentApp();
+        final ArrayList <String>  watchedApps = new ArrayList<>();
+        final Button button = (Button) findViewById(R.id.enter_button);
+        final EditText editText = (EditText) findViewById(R.id.app_name_field);
 
         Context context = this;
         Intent serviceIntent = new Intent(context,CurrentAppReporter.class);
@@ -35,7 +43,16 @@ public class MainActivity extends ActionBarActivity {
 // This schedule a runnable task every 2 minutes
         scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
             public void run() {
-                String x = getCurrentApp();
+                String x = getCurrentAppAndHandle(watchedApps);
+                button.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        String textBoxContents = editText.getText().toString();
+                        if(!watchedApps.contains(textBoxContents)){
+                            watchedApps.add(editText.getText().toString());
+                        }
+
+                    }
+                });
                 //Log.d(x,"current app is:");
 
             }
@@ -51,22 +68,27 @@ public class MainActivity extends ActionBarActivity {
 
     //this will be called by the background service to get the current app.
     // current this logic is within the service for testing purposes.
-    public String getCurrentApp(){
+    public String getCurrentAppAndHandle(ArrayList watchedApps){
         Context context = this;
         String currentApp = null;
         ActivityManager activityManager = (ActivityManager) context.getSystemService( Context.ACTIVITY_SERVICE );
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
-       // final FaceDetectionController fdController = new FaceDetectionController();
+        String test= "?";
+        Log.i(test,"trying to create new instance of faceDetectionController");
+       //final FaceDetectionController fdController = new FaceDetectionController();
+         test= "true";
+        Log.i(test,"was able to create new instance of faceDetectionController");
         for(ActivityManager.RunningAppProcessInfo ap : appProcesses){
             if(ap.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND){
                 currentApp = ap.processName;
-               // Log.i("Foreground App", ap.processName);
-                if(ap.processName.equals("cse4471.shouldersurf")){
+                Log.i("Foreground App", ap.processName);
+
+                if(watchedApps.contains(ap.processName)){
                     //start the controller.
                     Log.i(ap.processName,"detected as foreground, the camera should open");
-                    //fdController.safeCameraOpen(1);
-                   // fdController.createCameraSession();
-                   // fdController.startFaceDetection();
+                   //fdController.safeCameraOpen(0);
+                   //fdController.createCameraSession();
+                   //fdController.startFaceDetection();
                 }
             }
         }
