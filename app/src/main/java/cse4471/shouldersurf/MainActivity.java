@@ -45,10 +45,18 @@ public class MainActivity extends ActionBarActivity {
 
         ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
 
-// This schedule a runnable task every 2 minutes
+        /*
+        This schedules a runnable task every 10 seconds. This means that the task will look
+        at the current running app every 10 seconds and determine if it should start the camera.
+
+        This task will keep refreshing even if the current app stays open but the time
+        it takes to reinitialize the camera should be less than a second so it raises no security concerns.
+        */
         scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
             public void run() {
+                //calls the method that looks at current app and decides to start the camera or not.
                 String x = getCurrentAppAndHandle(watchedApps);
+
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         String textBoxContents = editText.getText().toString();
@@ -91,7 +99,7 @@ public class MainActivity extends ActionBarActivity {
                 if(watchedApps.contains(ap.processName)){
                     //start the controller.
                     Log.i(ap.processName,"detected as foreground, the camera should open");
-                    alertUser();
+                    //alertUser();
                     int cameraId = -1;
                     int numberOfCameras = Camera.getNumberOfCameras();
                     for (int i = 0; i < numberOfCameras; i++) {
@@ -103,9 +111,13 @@ public class MainActivity extends ActionBarActivity {
                             break;
                         }
                     }
-                   //fdController.safeCameraOpen(cameraId);
+                   //fdController.openCamera(cameraId);
                    //fdController.createCameraSession();
                    //fdController.startFaceDetection();
+                }else{
+//                    if(fdController.cameraIsOpen){
+//                        fdController.closeCamera();
+//                    }
                 }
             }
         }

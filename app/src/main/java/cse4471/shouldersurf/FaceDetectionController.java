@@ -16,22 +16,22 @@ import android.view.ViewGroup;
  */
 
 public class FaceDetectionController extends Activity{
-
+    public boolean cameraIsOpen = false;
 
     private Camera mCamera;
-    public boolean safeCameraOpen(int id) {
-        boolean qOpened = false;
+    public boolean openCamera(int id) {
+
 
         try {
 
             mCamera = Camera.open(id);
-            qOpened = (mCamera != null);
+            cameraIsOpen = (mCamera != null);
         } catch (Exception e) {
             Log.e(getString(R.string.app_name), "failed to open Camera");
             e.printStackTrace();
         }
 
-        return qOpened;
+        return cameraIsOpen;
     }
 
     public void createCameraSession(){
@@ -67,6 +67,9 @@ public class FaceDetectionController extends Activity{
         }
         return true;
     }
+   public void closeCamera(){
+       mCamera.release();
+   }
 
 }
 
