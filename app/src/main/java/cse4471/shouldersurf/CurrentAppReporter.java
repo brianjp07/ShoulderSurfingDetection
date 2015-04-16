@@ -11,6 +11,7 @@ import android.util.Log;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import cse4471.shouldersurf.FaceDetectionController;
 
 /**
  * Created by Brian on 4/10/2015.
@@ -55,6 +56,9 @@ public class CurrentAppReporter extends IntentService {
         for(ActivityManager.RunningAppProcessInfo ap : appProcesses){
             if(ap.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND){
                 currentApp = ap.processName;
+                if (currentApp.equals("cse4471.shouldersurf")){
+
+                }
                 Log.i("Foreground App", ap.processName);
             }
         }

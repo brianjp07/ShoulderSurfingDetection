@@ -12,6 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -27,8 +30,21 @@ public class MainActivity extends ActionBarActivity {
         Intent serviceIntent = new Intent(context,CurrentAppReporter.class);
         //serviceIntent.setAction("cse4471.shouldersurf.CurrentAppReporter");
 
+        ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
 
-        startService(serviceIntent);
+// This schedule a runnable task every 2 minutes
+        scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+                String x = getCurrentApp();
+                //Log.d(x,"current app is:");
+
+            }
+        }, 0, 10, TimeUnit.SECONDS);
+        /*
+
+            We might not even need this
+         */
+        //startService(serviceIntent);
 
 
     }
@@ -40,10 +56,18 @@ public class MainActivity extends ActionBarActivity {
         String currentApp = null;
         ActivityManager activityManager = (ActivityManager) context.getSystemService( Context.ACTIVITY_SERVICE );
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+       // final FaceDetectionController fdController = new FaceDetectionController();
         for(ActivityManager.RunningAppProcessInfo ap : appProcesses){
             if(ap.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND){
                 currentApp = ap.processName;
-                Log.i("Foreground App", ap.processName);
+               // Log.i("Foreground App", ap.processName);
+                if(ap.processName.equals("cse4471.shouldersurf")){
+                    //start the controller.
+                    Log.i(ap.processName,"detected as foreground, the camera should open");
+                    //fdController.safeCameraOpen(1);
+                   // fdController.createCameraSession();
+                   // fdController.startFaceDetection();
+                }
             }
         }
         return currentApp;

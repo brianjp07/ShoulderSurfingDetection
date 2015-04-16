@@ -21,7 +21,7 @@ public class FaceDetectionController extends Activity{
     private Camera mCamera;
 
 
-    private boolean safeCameraOpen(int id) {
+    public boolean safeCameraOpen(int id) {
         boolean qOpened = false;
 
         try {
