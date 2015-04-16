@@ -133,6 +133,7 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
     public void alertUser(){
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

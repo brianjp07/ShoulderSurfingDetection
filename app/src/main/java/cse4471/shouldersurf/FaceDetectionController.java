@@ -48,8 +48,9 @@ public class FaceDetectionController extends Activity{
             public void onFaceDetection(Camera.Face[] faces, Camera camera) {
                 if (faces.length > 0) {
                     Log.d("FaceDetection", " more than 1 face detected: " + faces.length);
-                /*todo: warn the user */
-
+                    //just a alias to main activity to do the notification.
+                MainActivity main = new MainActivity();
+                    main.alertUser();
                 }
             }
         };
