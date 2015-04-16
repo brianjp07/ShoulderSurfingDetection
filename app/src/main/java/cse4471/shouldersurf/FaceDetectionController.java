@@ -19,8 +19,6 @@ public class FaceDetectionController extends Activity{
 
 
     private Camera mCamera;
-
-
     public boolean safeCameraOpen(int id) {
         boolean qOpened = false;
 
@@ -36,8 +34,6 @@ public class FaceDetectionController extends Activity{
         return qOpened;
     }
 
-
-
     public void createCameraSession(){
         mCamera = Camera.open();
         mCamera.setFaceDetectionListener(FDListener);
@@ -50,7 +46,7 @@ public class FaceDetectionController extends Activity{
 
             @Override
             public void onFaceDetection(Camera.Face[] faces, Camera camera) {
-                if (faces.length > 1) {
+                if (faces.length > 0) {
                     Log.d("FaceDetection", " more than 1 face detected: " + faces.length);
                 /*todo: warn the user */
 
@@ -58,15 +54,17 @@ public class FaceDetectionController extends Activity{
             }
         };
     }
-    public void startFaceDetection(){
+    public boolean startFaceDetection(){
         // Try starting Face Detection
         Camera.Parameters params = mCamera.getParameters();
 
-        // start face detection only *after* preview has started
         if (params.getMaxNumDetectedFaces() > 0){
             // camera supports face detection, so can start it:
             mCamera.startFaceDetection();
+        }else{
+            Log.d("error","phone does not support face detection");
         }
+        return true;
     }
 
 }

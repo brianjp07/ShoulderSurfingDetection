@@ -2,10 +2,14 @@ package cse4471.shouldersurf;
 
 import android.app.ActivityManager;
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,6 +91,7 @@ public class MainActivity extends ActionBarActivity {
                 if(watchedApps.contains(ap.processName)){
                     //start the controller.
                     Log.i(ap.processName,"detected as foreground, the camera should open");
+                    alertUser();
                     int cameraId = -1;
                     int numberOfCameras = Camera.getNumberOfCameras();
                     for (int i = 0; i < numberOfCameras; i++) {
@@ -127,5 +132,18 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public void alertUser(){
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.generic_icon)
+                        .setContentTitle("My notification")
+                        .setContentText("Hello World! Someone is watching");
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+// notificationID allows you to update the notification later on.
+        mNotificationManager.notify(1, mBuilder.build());
+
     }
 }
