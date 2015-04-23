@@ -104,95 +104,89 @@ public class MainActivity extends ActionBarActivity {
                 if (watchedApps.contains(ap.processName)) {
                     //start the controller.
                     Log.i(ap.processName, "detected as foreground");
-//                    try{
-//                        mCamera = getCameraInstance();
-//                        SurfaceHolder holder = new SurfaceHolder() {
-//                            @Override
-//                            public void addCallback(Callback callback) {
-//
-//                            }
-//
-//                            @Override
-//                            public void removeCallback(Callback callback) {
-//
-//                            }
-//
-//                            @Override
-//                            public boolean isCreating() {
-//                                return true;
-//                            }
-//
-//                            @Override
-//                            public void setType(int type) {
-//
-//                            }
-//
-//                            @Override
-//                            public void setFixedSize(int width, int height) {
-//
-//                            }
-//
-//                            @Override
-//                            public void setSizeFromLayout() {
-//
-//                            }
-//
-//                            @Override
-//                            public void setFormat(int format) {
-//
-//                            }
-//
-//                            @Override
-//                            public void setKeepScreenOn(boolean screenOn) {
-//
-//                            }
-//
-//                            @Override
-//                            public Canvas lockCanvas() {
-//                                return null;
-//                            }
-//
-//                            @Override
-//                            public Canvas lockCanvas(Rect dirty) {
-//                                return null;
-//                            }
-//
-//                            @Override
-//                            public void unlockCanvasAndPost(Canvas canvas) {
-//
-//                            }
-//
-//                            @Override
-//                            public Rect getSurfaceFrame() {
-//                                return null;
-//                            }
-//
-//                            @Override
-//                            public Surface getSurface() {
-//                                return null;
-//                            }
-//                        };
-//
-//                        //mCamera.setPreviewDisplay(holder);
-//                        SurfaceTexture texture = new SurfaceTexture(1);
-//                        mCamera.setPreviewTexture(texture);
-//                        mCamera.startPreview();
-//                        //TODO: why are there so many startFaceDetections?
-//                        //ANSWER: startFaceDetection has a thing in it to check if it's already running,
-//                        // and it will show up in the log if it tries to open if it already is open.
-//                        mCamera.startFaceDetection();
-//
-//                    }catch(Exception e){
-//                        startFaceDetection();
-//                    }
-                    mCamera.setPreviewDisplay(holder);
-                    SurfaceTexture texture = new SurfaceTexture(1);
-                    try {
+                    try{
+                        mCamera = getCameraInstance();
+                        SurfaceHolder holder = new SurfaceHolder() {
+                            @Override
+                            public void addCallback(Callback callback) {
+
+                            }
+
+                            @Override
+                            public void removeCallback(Callback callback) {
+
+                            }
+
+                            @Override
+                            public boolean isCreating() {
+                                return true;
+                            }
+
+                            @Override
+                            public void setType(int type) {
+
+                            }
+
+                            @Override
+                            public void setFixedSize(int width, int height) {
+
+                            }
+
+                            @Override
+                            public void setSizeFromLayout() {
+
+                            }
+
+                            @Override
+                            public void setFormat(int format) {
+
+                            }
+
+                            @Override
+                            public void setKeepScreenOn(boolean screenOn) {
+
+                            }
+
+                            @Override
+                            public Canvas lockCanvas() {
+                                return null;
+                            }
+
+                            @Override
+                            public Canvas lockCanvas(Rect dirty) {
+                                return null;
+                            }
+
+                            @Override
+                            public void unlockCanvasAndPost(Canvas canvas) {
+
+                            }
+
+                            @Override
+                            public Rect getSurfaceFrame() {
+                                return null;
+                            }
+
+                            @Override
+                            public Surface getSurface() {
+                                return null;
+                            }
+                        };
+
+                        //mCamera.setPreviewDisplay(holder);
+                        SurfaceTexture texture = new SurfaceTexture(1);
                         mCamera.setPreviewTexture(texture);
+                        mCamera.startPreview();
+                        //TODO: why are there so many startFaceDetections?
+                        //ANSWER: startFaceDetection has a thing in it to check if it's already running,
+                        // and it will show up in the log if it tries to open if it already is open.
+                        mCamera.startFaceDetection();
+
                     }catch(Exception e){
-                        Log.i("could not","ser preview texture");
+                        startFaceDetection();
                     }
-                    mCamera.startPreview();
+
+                    
                     //TODO: why are there so many startFaceDetections?
                     //ANSWER: startFaceDetection has a thing in it to check if it's already running,
                     // and it will show up in the log if it tries to open if it already is open.
