@@ -45,7 +45,14 @@ public class MainActivity extends ActionBarActivity {
         final ArrayList<String> watchedApps = new ArrayList<>();
         final Button button = (Button) findViewById(R.id.enter_button);
         final EditText editText = (EditText) findViewById(R.id.app_name_field);
-     
+        //TODO: might be good to display a list of apps that are already being watched, but I
+        //Think that would mean we have to add persistence, and that's probably not needed, so low priority
+
+        //TODO: also we get a list of all installed apps with the following code, idk how hard to display
+// http://stackoverflow.com/questions/2695746/how-to-get-a-list-of-installed-android-applications-and-pick-one-to-run
+//        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+//        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+//        final List pkgAppsList = context.getPackageManager().queryIntentActivities( mainIntent, 0);
 
         Context context = this;
 
@@ -105,6 +112,7 @@ public class MainActivity extends ActionBarActivity {
                 if (watchedApps.contains(ap.processName)) {
                     //the current app is a watched app!
                     //TODO: notify user that a watched app is opened, priority: high
+                    //TODO: alertUser might do it, untested atm
                     alertUser(ap.processName);
                     //start the controller.
                     Log.i(ap.processName, "detected as foreground");
@@ -191,17 +199,14 @@ public class MainActivity extends ActionBarActivity {
                         startFaceDetection();
                     }
 
-
-                    //TODO: why are there so many startFaceDetections?
-                    //ANSWER: startFaceDetection has a thing in it to check if it's already running,
-                    // and it will show up in the log if it tries to open if it already is open.
                     mCamera.startFaceDetection();
                     Log.i("last line:", "mCamera.startPreview()");
                     startFaceDetection();
                     Log.i("last line:", "startFaceDetection();");
 
-                    //TODO: at this point, the preview  should be running and the detection should be on
-                    //TODO: but we need to do the "face listening"
+                    /*TODO: at this point, the preview  should be running and the detection should be on
+                     but we need to do the "face listening", I think that is happening automatically
+                    after startFaceDetection was called.*/
 
 
                     // This is supposed to put the activity in the background (by going to home)
@@ -210,6 +215,8 @@ public class MainActivity extends ActionBarActivity {
                     i.addCategory(Intent.CATEGORY_HOME);
                     startActivity(i);
 
+                    //I commented this out because i don't know what it's there for
+                    //i'm using the method for alerting the user when they open a watched app
                     //alertUser();
 
                 } else {
@@ -217,7 +224,7 @@ public class MainActivity extends ActionBarActivity {
                             mCamera.stopPreview();
                             mCamera.release();
                         }catch (Exception e){
-
+                            //TODO
                         }
                 }
             }
@@ -248,11 +255,12 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void alertUser(String watchedApp) {
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.generic_icon)
                         .setContentTitle("App Watcher")
-                        .setContentText(watchedApp+" is a flagged app! Shoulder surfing initiated.");
+                        .setContentText(watchedApp + " is a flagged app! Shoulder surfing initiated.");
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
