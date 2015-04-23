@@ -45,6 +45,7 @@ public class MainActivity extends ActionBarActivity {
         final ArrayList<String> watchedApps = new ArrayList<>();
         final Button button = (Button) findViewById(R.id.enter_button);
         final EditText editText = (EditText) findViewById(R.id.app_name_field);
+     
 
         Context context = this;
 
@@ -102,6 +103,9 @@ public class MainActivity extends ActionBarActivity {
                 Log.i("Foreground App", ap.processName);
 
                 if (watchedApps.contains(ap.processName)) {
+                    //the current app is a watched app!
+                    //TODO: notify user that a watched app is opened, priority: high
+                    alertUser(ap.processName);
                     //start the controller.
                     Log.i(ap.processName, "detected as foreground");
                     try{
@@ -169,6 +173,7 @@ public class MainActivity extends ActionBarActivity {
 
                             @Override
                             public Surface getSurface() {
+
                                 return null;
                             }
                         };
@@ -186,13 +191,13 @@ public class MainActivity extends ActionBarActivity {
                         startFaceDetection();
                     }
 
-                    
+
                     //TODO: why are there so many startFaceDetections?
                     //ANSWER: startFaceDetection has a thing in it to check if it's already running,
                     // and it will show up in the log if it tries to open if it already is open.
                     mCamera.startFaceDetection();
                     Log.i("last line:", "mCamera.startPreview()");
-                  //  startFaceDetection();
+                    startFaceDetection();
                     Log.i("last line:", "startFaceDetection();");
 
                     //TODO: at this point, the preview  should be running and the detection should be on
@@ -242,12 +247,12 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void alertUser() {
+    public void alertUser(String watchedApp) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.generic_icon)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World! Someone is watching");
+                        .setContentTitle("App Watcher")
+                        .setContentText(watchedApp+" is a flagged app! Shoulder surfing initiated.");
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -306,7 +311,7 @@ public class MainActivity extends ActionBarActivity {
                         "Y: " + faces[0].rect.centerY());
                 Log.d("FaceDetection", "too many faces! need to alert user now");
                 //TODO: confused about how to make this right
-                tooManyFaces(mCamera);
+                //tooManyFaces(mCamera);
 
 
             }else{
