@@ -96,6 +96,7 @@ public class MainActivity extends ActionBarActivity {
         test = "true";
         Log.i(test, "was able to create new instance of faceDetectionController");
         for (ActivityManager.RunningAppProcessInfo ap : appProcesses) {
+
             if (ap.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
                 currentApp = ap.processName;
                 Log.i("Foreground App", ap.processName);
@@ -103,89 +104,114 @@ public class MainActivity extends ActionBarActivity {
                 if (watchedApps.contains(ap.processName)) {
                     //start the controller.
                     Log.i(ap.processName, "detected as foreground");
-                    try{
-                        mCamera = getCameraInstance();
-                        SurfaceHolder holder = new SurfaceHolder() {
-                            @Override
-                            public void addCallback(Callback callback) {
-
-                            }
-
-                            @Override
-                            public void removeCallback(Callback callback) {
-
-                            }
-
-                            @Override
-                            public boolean isCreating() {
-                                return true;
-                            }
-
-                            @Override
-                            public void setType(int type) {
-
-                            }
-
-                            @Override
-                            public void setFixedSize(int width, int height) {
-
-                            }
-
-                            @Override
-                            public void setSizeFromLayout() {
-
-                            }
-
-                            @Override
-                            public void setFormat(int format) {
-
-                            }
-
-                            @Override
-                            public void setKeepScreenOn(boolean screenOn) {
-
-                            }
-
-                            @Override
-                            public Canvas lockCanvas() {
-                                return null;
-                            }
-
-                            @Override
-                            public Canvas lockCanvas(Rect dirty) {
-                                return null;
-                            }
-
-                            @Override
-                            public void unlockCanvasAndPost(Canvas canvas) {
-
-                            }
-
-                            @Override
-                            public Rect getSurfaceFrame() {
-                                return null;
-                            }
-
-                            @Override
-                            public Surface getSurface() {
-                                return null;
-                            }
-                        };
-
-                        //mCamera.setPreviewDisplay(holder);
-                        SurfaceTexture texture = new SurfaceTexture(1);
+//                    try{
+//                        mCamera = getCameraInstance();
+//                        SurfaceHolder holder = new SurfaceHolder() {
+//                            @Override
+//                            public void addCallback(Callback callback) {
+//
+//                            }
+//
+//                            @Override
+//                            public void removeCallback(Callback callback) {
+//
+//                            }
+//
+//                            @Override
+//                            public boolean isCreating() {
+//                                return true;
+//                            }
+//
+//                            @Override
+//                            public void setType(int type) {
+//
+//                            }
+//
+//                            @Override
+//                            public void setFixedSize(int width, int height) {
+//
+//                            }
+//
+//                            @Override
+//                            public void setSizeFromLayout() {
+//
+//                            }
+//
+//                            @Override
+//                            public void setFormat(int format) {
+//
+//                            }
+//
+//                            @Override
+//                            public void setKeepScreenOn(boolean screenOn) {
+//
+//                            }
+//
+//                            @Override
+//                            public Canvas lockCanvas() {
+//                                return null;
+//                            }
+//
+//                            @Override
+//                            public Canvas lockCanvas(Rect dirty) {
+//                                return null;
+//                            }
+//
+//                            @Override
+//                            public void unlockCanvasAndPost(Canvas canvas) {
+//
+//                            }
+//
+//                            @Override
+//                            public Rect getSurfaceFrame() {
+//                                return null;
+//                            }
+//
+//                            @Override
+//                            public Surface getSurface() {
+//                                return null;
+//                            }
+//                        };
+//
+//                        //mCamera.setPreviewDisplay(holder);
+//                        SurfaceTexture texture = new SurfaceTexture(1);
+//                        mCamera.setPreviewTexture(texture);
+//                        mCamera.startPreview();
+//                        //TODO: why are there so many startFaceDetections?
+//                        //ANSWER: startFaceDetection has a thing in it to check if it's already running,
+//                        // and it will show up in the log if it tries to open if it already is open.
+//                        mCamera.startFaceDetection();
+//
+//                    }catch(Exception e){
+//                        startFaceDetection();
+//                    }
+                    mCamera.setPreviewDisplay(holder);
+                    SurfaceTexture texture = new SurfaceTexture(1);
+                    try {
                         mCamera.setPreviewTexture(texture);
-                        mCamera.startPreview();
-                        mCamera.startFaceDetection();
                     }catch(Exception e){
-                        startFaceDetection();
+                        Log.i("could not","ser preview texture");
                     }
-
+                    mCamera.startPreview();
+                    //TODO: why are there so many startFaceDetections?
+                    //ANSWER: startFaceDetection has a thing in it to check if it's already running,
+                    // and it will show up in the log if it tries to open if it already is open.
+                    mCamera.startFaceDetection();
                     Log.i("last line:", "mCamera.startPreview()");
-                    startFaceDetection();
+                  //  startFaceDetection();
                     Log.i("last line:", "startFaceDetection();");
 
-                    alertUser();
+                    //TODO: at this point, the preview  should be running and the detection should be on
+                    //TODO: but we need to do the "face listening"
+
+
+                    // This is supposed to put the activity in the background (by going to home)
+                    // an activity in the background will close if resources are limited.
+                    Intent i = new Intent(Intent.ACTION_MAIN);
+                    i.addCategory(Intent.CATEGORY_HOME);
+                    startActivity(i);
+
+                    //alertUser();
 
                 } else {
                         try{
@@ -231,7 +257,7 @@ public class MainActivity extends ActionBarActivity {
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-// notificationID allows you to update the notification later on.
+        // notificationID allows you to update the notification later on.
         mNotificationManager.notify(1, mBuilder.build());
 
     }
@@ -266,18 +292,39 @@ public class MainActivity extends ActionBarActivity {
 
     public static class FDListener implements Camera.FaceDetectionListener {
 
-
+        //http://www.doepiccoding.com/blog/?p=318
         @Override
         public void onFaceDetection(Camera.Face[] faces, Camera mCamera) {
 
-            if (faces.length > 0) {
+            if (faces.length <= 1) {
+
+                //TODO: maybe check the one face's parameters to see if they are what is expected?
+                //TODO: not sure how this would be done (just positioning maybe). low priority
                 Log.d("FaceDetection", "face detected: " + faces.length +
                         " Face 1 Location X: " + faces[0].rect.centerX() +
                         "Y: " + faces[0].rect.centerY());
+                Log.d("FaceDetection", "0 or 1 faces, we are ok");
+
+            }else if(faces.length > 1) {
+            //TODO: this is the part where we do something if there are too many faces
+                Log.d("FaceDetection", "face detected: " + faces.length +
+                        " Face 1 Location X: " + faces[0].rect.centerX() +
+                        "Y: " + faces[0].rect.centerY());
+                Log.d("FaceDetection", "too many faces! need to alert user now");
+                //TODO: confused about how to make this right
+                tooManyFaces(mCamera);
+
+
             }else{
                 Log.d("no","faces");
             }
         }
+    }
+    public void tooManyFaces(){
+        //TODO: pop up the camera from the background: high priority
+        //this line is  supposed to bring this activity to the foreground
+        //and make sure there is only one of this activity
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
     }
 
     public void startFaceDetection() {
@@ -293,8 +340,16 @@ public class MainActivity extends ActionBarActivity {
             Log.d("face dection", "started");
             mCamera.startFaceDetection();
         }else{
-            Log.d("face dection", "didn't start");
+            Log.d("face detection", "max faces = 0, so it can't detect faces");
         }
     }
+
+    //http://stackoverflow.com/questions/2232238/how-to-bring-an-activity-to-foreground-top-of-stack
+    private static Intent getIntent(Context context, Class<?> cls){
+        Intent intent = new Intent(context, cls);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        return intent;
+    }
+
 
 }
