@@ -56,6 +56,11 @@ public class MainActivity extends ActionBarActivity {
         scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 //calls the method that looks at current app and decides to start the camera or not.
+                try{
+                    mCamera.release();
+                }catch(Exception e){
+
+                }
                 String x = getCurrentAppAndHandle(watchedApps);
 
                 button.setOnClickListener(new View.OnClickListener() {
@@ -157,7 +162,7 @@ public class MainActivity extends ActionBarActivity {
         for (int i = 0; i < numberOfCameras; i++) {
             Camera.CameraInfo info = new Camera.CameraInfo();
             Camera.getCameraInfo(i, info);
-            if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                 Log.d("it was", "Camera found");
                 cameraId = i;
                 break;
@@ -165,10 +170,12 @@ public class MainActivity extends ActionBarActivity {
         }
         Camera c = null;
         try {
+
             c = Camera.open(cameraId); // attempt to get a Camera instance
 
         } catch (Exception e) {
             // Camera is not available (in use or does not exist)
+            Log.d(e.toString(),"error opening camera");
         }
         return c; // returns null if camera is unavailable
     }
