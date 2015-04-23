@@ -9,6 +9,9 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +19,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends ActionBarActivity {
     private Camera mCamera;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +47,7 @@ public class MainActivity extends ActionBarActivity {
         final EditText editText = (EditText) findViewById(R.id.app_name_field);
 
         Context context = this;
-        Intent serviceIntent = new Intent(context, CurrentAppReporter.class);
-        //serviceIntent.setAction("cse4471.shouldersurf.CurrentAppReporter");
+
 
         ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
 
@@ -56,11 +61,7 @@ public class MainActivity extends ActionBarActivity {
         scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 //calls the method that looks at current app and decides to start the camera or not.
-                try{
-                    mCamera.release();
-                }catch(Exception e){
 
-                }
                 String x = getCurrentAppAndHandle(watchedApps);
 
                 button.setOnClickListener(new View.OnClickListener() {
@@ -75,12 +76,9 @@ public class MainActivity extends ActionBarActivity {
                 //Log.d(x,"current app is:");
 
             }
-        }, 0, 10, TimeUnit.SECONDS);
-        /*
+        }, 0, 20, TimeUnit.SECONDS);
 
-            We might not even need this
-         */
-        //startService(serviceIntent);
+
 
 
     }
@@ -105,13 +103,97 @@ public class MainActivity extends ActionBarActivity {
                 if (watchedApps.contains(ap.processName)) {
                     //start the controller.
                     Log.i(ap.processName, "detected as foreground");
-                    mCamera = getCameraInstance();
-                    mCamera.setFaceDetectionListener(new FDListener());
+                    try{
+                        mCamera = getCameraInstance();
+                        SurfaceHolder holder = new SurfaceHolder() {
+                            @Override
+                            public void addCallback(Callback callback) {
+
+                            }
+
+                            @Override
+                            public void removeCallback(Callback callback) {
+
+                            }
+
+                            @Override
+                            public boolean isCreating() {
+                                return true;
+                            }
+
+                            @Override
+                            public void setType(int type) {
+
+                            }
+
+                            @Override
+                            public void setFixedSize(int width, int height) {
+
+                            }
+
+                            @Override
+                            public void setSizeFromLayout() {
+
+                            }
+
+                            @Override
+                            public void setFormat(int format) {
+
+                            }
+
+                            @Override
+                            public void setKeepScreenOn(boolean screenOn) {
+
+                            }
+
+                            @Override
+                            public Canvas lockCanvas() {
+                                return null;
+                            }
+
+                            @Override
+                            public Canvas lockCanvas(Rect dirty) {
+                                return null;
+                            }
+
+                            @Override
+                            public void unlockCanvasAndPost(Canvas canvas) {
+
+                            }
+
+                            @Override
+                            public Rect getSurfaceFrame() {
+                                return null;
+                            }
+
+                            @Override
+                            public Surface getSurface() {
+                                return null;
+                            }
+                        };
+
+                        //mCamera.setPreviewDisplay(holder);
+                        SurfaceTexture texture = new SurfaceTexture(1);
+                        mCamera.setPreviewTexture(texture);
+                        mCamera.startPreview();
+                        mCamera.startFaceDetection();
+                    }catch(Exception e){
+                        startFaceDetection();
+                    }
+
+                    Log.i("last line:", "mCamera.startPreview()");
                     startFaceDetection();
+                    Log.i("last line:", "startFaceDetection();");
+
                     alertUser();
 
                 } else {
+                        try{
+                            mCamera.stopPreview();
+                            mCamera.release();
+                        }catch (Exception e){
 
+                        }
                 }
             }
         }
@@ -171,15 +253,15 @@ public class MainActivity extends ActionBarActivity {
         Camera c = null;
         try {
 
-            c = Camera.open(cameraId); // attempt to get a Camera instance
+            c = Camera.open(0); // attempt to get a Camera instance
+            c.setFaceDetectionListener(new FDListener());
 
         } catch (Exception e) {
             // Camera is not available (in use or does not exist)
-            Log.d(e.toString(),"error opening camera");
+            Log.d(e.toString(), "error opening camera");
         }
         return c; // returns null if camera is unavailable
     }
-
 
 
     public static class FDListener implements Camera.FaceDetectionListener {
@@ -192,6 +274,8 @@ public class MainActivity extends ActionBarActivity {
                 Log.d("FaceDetection", "face detected: " + faces.length +
                         " Face 1 Location X: " + faces[0].rect.centerX() +
                         "Y: " + faces[0].rect.centerY());
+            }else{
+                Log.d("no","faces");
             }
         }
     }
@@ -199,14 +283,18 @@ public class MainActivity extends ActionBarActivity {
     public void startFaceDetection() {
         // Try starting Face Detection
         Camera.Parameters params = mCamera.getParameters();
-        Log.d("face dection", "started");
+        //mCamera.startFaceDetection();
         // start face detection only *after* preview has started
+        int x = params.getMaxNumDetectedFaces();
+        Log.i("params.getMaxedFaces()", Integer.toString(x));
         if (params.getMaxNumDetectedFaces() > 0) {
 
             // camera supports face detection, so can start it:
+            Log.d("face dection", "started");
             mCamera.startFaceDetection();
+        }else{
+            Log.d("face dection", "didn't start");
         }
     }
-
 
 }
