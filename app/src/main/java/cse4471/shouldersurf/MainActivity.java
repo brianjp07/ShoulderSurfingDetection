@@ -1,5 +1,6 @@
 package cse4471.shouldersurf;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -28,19 +29,19 @@ import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends ActionBarActivity {
-
+    private Camera mCamera;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //look  at the logs to see result.
         //getCurrentApp();
-        final ArrayList <String>  watchedApps = new ArrayList<>();
+        final ArrayList<String> watchedApps = new ArrayList<>();
         final Button button = (Button) findViewById(R.id.enter_button);
         final EditText editText = (EditText) findViewById(R.id.app_name_field);
 
         Context context = this;
-        Intent serviceIntent = new Intent(context,CurrentAppReporter.class);
+        Intent serviceIntent = new Intent(context, CurrentAppReporter.class);
         //serviceIntent.setAction("cse4471.shouldersurf.CurrentAppReporter");
 
         ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
@@ -60,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         String textBoxContents = editText.getText().toString();
-                        if(!watchedApps.contains(textBoxContents)){
+                        if (!watchedApps.contains(textBoxContents)) {
                             watchedApps.add(editText.getText().toString());
                         }
 
@@ -81,43 +82,31 @@ public class MainActivity extends ActionBarActivity {
 
     //this will be called by the background service to get the current app.
     // current this logic is within the service for testing purposes.
-    public String getCurrentAppAndHandle(ArrayList watchedApps){
+    public String getCurrentAppAndHandle(ArrayList watchedApps) {
         Context context = this;
         String currentApp = null;
-        ActivityManager activityManager = (ActivityManager) context.getSystemService( Context.ACTIVITY_SERVICE );
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
-        String test= "?";
-        Log.i(test,"trying to create new instance of faceDetectionController");
-       //final FaceDetectionController fdController = new FaceDetectionController();
-         test= "true";
-        Log.i(test,"was able to create new instance of faceDetectionController");
-        for(ActivityManager.RunningAppProcessInfo ap : appProcesses){
-            if(ap.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND){
+        String test = "?";
+        Log.i(test, "trying to create new instance of faceDetectionController");
+
+        test = "true";
+        Log.i(test, "was able to create new instance of faceDetectionController");
+        for (ActivityManager.RunningAppProcessInfo ap : appProcesses) {
+            if (ap.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
                 currentApp = ap.processName;
                 Log.i("Foreground App", ap.processName);
 
-                if(watchedApps.contains(ap.processName)){
+                if (watchedApps.contains(ap.processName)) {
                     //start the controller.
-                    Log.i(ap.processName,"detected as foreground, the camera should open");
-                    //alertUser();
-                    int cameraId = -1;
-                    int numberOfCameras = Camera.getNumberOfCameras();
-                    for (int i = 0; i < numberOfCameras; i++) {
-                        Camera.CameraInfo info = new Camera.CameraInfo();
-                        Camera.getCameraInfo(i, info);
-                        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                            Log.d("it was", "Camera found");
-                            cameraId = i;
-                            break;
-                        }
-                    }
-                   //fdController.openCamera(cameraId);
-                   //fdController.createCameraSession();
-                   //fdController.startFaceDetection();
-                }else{
-//                    if(fdController.cameraIsOpen){
-//                        fdController.closeCamera();
-//                    }
+                    Log.i(ap.processName, "detected as foreground");
+                    mCamera = getCameraInstance();
+                    mCamera.setFaceDetectionListener(new FDListener());
+                    startFaceDetection();
+                    alertUser();
+
+                } else {
+
                 }
             }
         }
@@ -146,7 +135,7 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void alertUser(){
+    public void alertUser() {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.generic_icon)
@@ -159,4 +148,58 @@ public class MainActivity extends ActionBarActivity {
         mNotificationManager.notify(1, mBuilder.build());
 
     }
+
+
+    public static Camera getCameraInstance() {
+        Log.d("camera entered", "test");
+        int cameraId = -1;
+        int numberOfCameras = Camera.getNumberOfCameras();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(i, info);
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                Log.d("it was", "Camera found");
+                cameraId = i;
+                break;
+            }
+        }
+        Camera c = null;
+        try {
+            c = Camera.open(cameraId); // attempt to get a Camera instance
+
+        } catch (Exception e) {
+            // Camera is not available (in use or does not exist)
+        }
+        return c; // returns null if camera is unavailable
+    }
+
+
+
+    public static class FDListener implements Camera.FaceDetectionListener {
+
+
+        @Override
+        public void onFaceDetection(Camera.Face[] faces, Camera mCamera) {
+
+            if (faces.length > 0) {
+                Log.d("FaceDetection", "face detected: " + faces.length +
+                        " Face 1 Location X: " + faces[0].rect.centerX() +
+                        "Y: " + faces[0].rect.centerY());
+            }
+        }
+    }
+
+    public void startFaceDetection() {
+        // Try starting Face Detection
+        Camera.Parameters params = mCamera.getParameters();
+        Log.d("face dection", "started");
+        // start face detection only *after* preview has started
+        if (params.getMaxNumDetectedFaces() > 0) {
+
+            // camera supports face detection, so can start it:
+            mCamera.startFaceDetection();
+        }
+    }
+
+
 }

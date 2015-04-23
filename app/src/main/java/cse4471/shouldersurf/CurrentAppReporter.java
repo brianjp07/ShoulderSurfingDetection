@@ -11,7 +11,7 @@ import android.util.Log;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import cse4471.shouldersurf.FaceDetectionController;
+
 
 /**
  * Created by Brian on 4/10/2015.
