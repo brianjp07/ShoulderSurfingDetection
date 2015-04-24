@@ -24,6 +24,7 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,14 +46,22 @@ public class MainActivity extends ActionBarActivity {
         final ArrayList<String> watchedApps = new ArrayList<>();
         final Button button = (Button) findViewById(R.id.enter_button);
         final EditText editText = (EditText) findViewById(R.id.app_name_field);
+        final TextView listView = (TextView) findViewById(R.id.textView);
         //TODO: might be good to display a list of apps that are already being watched, but I
         //Think that would mean we have to add persistence, and that's probably not needed, so low priority
 
         //TODO: also we get a list of all installed apps with the following code, idk how hard to display
 // http://stackoverflow.com/questions/2695746/how-to-get-a-list-of-installed-android-applications-and-pick-one-to-run
-//        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-//        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-//        final List pkgAppsList = context.getPackageManager().queryIntentActivities( mainIntent, 0);
+        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        final List pkgAppsList = this.getPackageManager().queryIntentActivities( mainIntent, 0);
+        int numPkg = pkgAppsList.size();
+        String listPkg = "";
+        for (int i = 0; i < numPkg; i++){
+            listPkg = listPkg + pkgAppsList.get(i).toString() + "\r\n";
+
+        }
+        listView.setText(listPkg);
 
         Context context = this;
 
