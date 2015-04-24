@@ -128,11 +128,11 @@ public class MainActivity extends ActionBarActivity {
         String currentApp = null;
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
-        String test = "?";
-        Log.i(test, "trying to create new instance of faceDetectionController");
-
-        test = "true";
-        Log.i(test, "was able to create new instance of faceDetectionController");
+//        String test = "?";
+//        Log.i(test, "trying to create new instance of faceDetectionController");
+//
+//        test = "true";
+//        Log.i(test, "was able to create new instance of faceDetectionController");
         for (ActivityManager.RunningAppProcessInfo ap : appProcesses) {
 
             if (ap.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
