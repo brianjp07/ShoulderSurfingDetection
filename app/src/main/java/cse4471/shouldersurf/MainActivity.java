@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Canvas;
@@ -56,20 +57,30 @@ public class MainActivity extends ActionBarActivity {
         final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         //this is a list of packages
-        final List pkgAppsList = this.getPackageManager().queryIntentActivities( mainIntent, 0);
+       // final List pkgAppsList = this.getPackageManager().queryIntentActivities( mainIntent, 0);
         //find out how many apps there are
-        int numPkg = pkgAppsList.size();
+        //int numPkg = pkgAppsList.size();
         // make a string for the textBox
+        // Flags: See below
+        int flags = PackageManager.GET_META_DATA |
+                PackageManager.GET_SHARED_LIBRARY_FILES |
+                PackageManager.GET_UNINSTALLED_PACKAGES;
 
+        PackageManager pm = getPackageManager();
+        List<ApplicationInfo> applications = pm.getInstalledApplications(flags);
         String listPkg = "";
-        for (int i = 0; i < numPkg; i++){
-            ResolveInfo info = (ResolveInfo) pkgAppsList.get(i);
-            String temp = info.resolvePackageName;
-            listPkg = listPkg + temp + "\r\n";
+        for (ApplicationInfo appInfo : applications) {
+            listPkg = listPkg + appInfo.toString() + "\r\n";
         }
-        listView.setText(listPkg);
 
-        Context context = this;
+
+
+//        for (int i = 0; i < numPkg; i++){
+////            ResolveInfo info = (ResolveInfo) pkgAppsList.get(i);
+////            String temp = info.resolvePackageName;
+//            //listPkg = listPkg + pkgAppsList.get(i).toString() + "\r\n";
+//        }
+        listView.setText(listPkg);
 
 
         ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
