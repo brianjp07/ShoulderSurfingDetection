@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends ActionBarActivity {
     private Camera mCamera;
+    final ArrayList<String> watchedApps = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         //look  at the logs to see result.
         //getCurrentApp();
-        final ArrayList<String> watchedApps = new ArrayList<>();
+
         final Button button = (Button) findViewById(R.id.enter_button);
         final EditText editText = (EditText) findViewById(R.id.app_name_field);
         final TextView listView = (TextView) findViewById(R.id.textView);
@@ -361,12 +362,12 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
-    public void tooManyFaces(){
-        //TODO: pop up the camera from the background: high priority
-        //this line is  supposed to bring this activity to the foreground
-        //and make sure there is only one of this activity
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-    }
+//    public void tooManyFaces(){
+//        //TODO: pop up the camera from the background: high priority
+//        //this line is  supposed to bring this activity to the foreground
+//        //and make sure there is only one of this activity
+//        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//    }
 
 
     public void startFaceDetection() {
@@ -395,11 +396,23 @@ public class MainActivity extends ActionBarActivity {
     protected void onPause(){
         Log.i("test","pause ping");
         super.onPause();
+        // use this to start and trigger a service
+        Context context = getApplicationContext();
+        Intent i = new Intent(context, backService.class);
+        // potentially add data to the intent
+        i.putExtra("KEY1", watchedApps);
+        context.startService(i);
     }
 
     protected void onResume(){
         Log.i("test","resume ping");
         super.onResume();
+        // use this to start and trigger a service
+        Context context = getApplicationContext();
+        Intent i = new Intent(context, backService.class);
+        // potentially add data to the intent
+        i.putExtra("KEY1", watchedApps);
+        context.stopService(i);
     }
 
 }
