@@ -46,24 +46,12 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //look  at the logs to see result.
-        //getCurrentApp();
 
         final Button button = (Button) findViewById(R.id.enter_button);
         final EditText editText = (EditText) findViewById(R.id.app_name_field);
         final TextView listView = (TextView) findViewById(R.id.textView);
-        //TODO: might be good to display a list of apps that are already being watched, but I
-        //Think that would mean we have to add persistence, and that's probably not needed, so low priority
 
-        //TODO: also we get a list of all installed apps with the following code, idk how hard to display
-// http://stackoverflow.com/questions/2695746/how-to-get-a-list-of-installed-android-applications-and-pick-one-to-run
-        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        //this is a list of packages
-       // final List pkgAppsList = this.getPackageManager().queryIntentActivities( mainIntent, 0);
-        //find out how many apps there are
-        //int numPkg = pkgAppsList.size();
-        // make a string for the textBox
-        // Flags: See below
+        //create a list of all the installed apps
         int flags = PackageManager.GET_META_DATA |
                 PackageManager.GET_SHARED_LIBRARY_FILES |
                 PackageManager.GET_UNINSTALLED_PACKAGES;
@@ -76,13 +64,7 @@ public class MainActivity extends ActionBarActivity {
             listPkg = listPkg + appInfo.processName + "\r\n";
         }
 
-
-
-//        for (int i = 0; i < numPkg; i++){
-////            ResolveInfo info = (ResolveInfo) pkgAppsList.get(i);
-////            String temp = info.resolvePackageName;
-//            //listPkg = listPkg + pkgAppsList.get(i).toString() + "\r\n";
-//        }
+        //display in Text
         listView.setText(listPkg);
 
 
@@ -141,8 +123,6 @@ public class MainActivity extends ActionBarActivity {
 
                 if (watchedApps.contains(ap.processName)) {
                     //the current app is a watched app!
-                    //TODO: notify user that a watched app is opened, priority: high
-                    //TODO: alertUser might do it, untested atm
                     alertUser(ap.processName);
                     //start the controller.
                     Log.i(ap.processName, "detected as foreground");
@@ -226,11 +206,6 @@ public class MainActivity extends ActionBarActivity {
                             }
                         });
                         mCamera.startPreview();
-                        //TODO: why are there so many startFaceDetections?
-                        //ANSWER: startFaceDetection has a thing in it to check if it's already running,
-                        // and it will show up in the log if it tries to open if it already is open.
-                        Log.i("hello", "hello");
-                        startFaceDetection();
                         Log.i("hola", "hola");
                             Thread.sleep(1000);
 
@@ -238,32 +213,15 @@ public class MainActivity extends ActionBarActivity {
 
                     }
 
-                    //mCamera.startFaceDetection();
-                    Log.i("last line:", "mCamera.startPreview()");
-                    //startFaceDetection();
-                    Log.i("last line:", "startFaceDetection();");
-
-                    /*TODO: at this point, the preview  should be running and the detection should be on
+                    /*at this point, the preview  should be running and the detection should be on
                      but we need to do the "face listening", I think that is happening automatically
                     after startFaceDetection was called.*/
-
-
-                    // This is supposed to put the activity in the background (by going to home)
-                    // an activity in the background will close if resources are limited.
-//                    Intent i = new Intent(Intent.ACTION_MAIN);
-//                    i.addCategory(Intent.CATEGORY_HOME);
-//                    startActivity(i);
-
-                    //I commented this out because i don't know what it's there for
-                    //i'm using the method for alerting the user when they open a watched app
-                    //alertUser();
 
                 } else {
                         try{
                             mCamera.stopPreview();
                             mCamera.release();
                         }catch (Exception e){
-                            //TODO
                         }
                 }
             }
@@ -327,7 +285,7 @@ public class MainActivity extends ActionBarActivity {
         Camera c = null;
         try {
 
-            c = Camera.open(0); // attempt to get a Camera instance
+            c = Camera.open(cameraId); // attempt to get a Camera instance
             c.setFaceDetectionListener(new FDListener());
 
         } catch (Exception e) {
@@ -340,65 +298,29 @@ public class MainActivity extends ActionBarActivity {
 
     public static class FDListener implements Camera.FaceDetectionListener {
 
-        //http://www.doepiccoding.com/blog/?p=318
         @Override
         public void onFaceDetection(Camera.Face[] faces, Camera mCamera) {
 
             if (faces.length <= 1) {
 
-                //TODO: maybe check the one face's parameters to see if they are what is expected?
-                //TODO: not sure how this would be done (just positioning maybe). low priority
                 Log.d("FaceDetection", "face detected: " + faces.length +
                         " Face 1 Location X: " + faces[0].rect.centerX() +
                         "Y: " + faces[0].rect.centerY());
                 Log.d("FaceDetection", "0 or 1 faces, we are ok");
 
             }else if(faces.length > 1) {
-            //TODO: this is the part where we do something if there are too many faces
+            //this is the part where we do something if there are too many faces
                 Log.d("FaceDetection", "face detected: " + faces.length +
                         " Face 1 Location X: " + faces[0].rect.centerX() +
                         "Y: " + faces[0].rect.centerY());
                 Log.d("FaceDetection", "too many faces! need to alert user now");
-                //TODO: confused about how to make this right
-                //tooManyFaces(mCamera);
-
 
             }else{
                 Log.d("no","faces");
             }
         }
     }
-//    public void tooManyFaces(){
-//        //TODO: pop up the camera from the background: high priority
-//        //this line is  supposed to bring this activity to the foreground
-//        //and make sure there is only one of this activity
-//        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//    }
 
-
-    public void startFaceDetection() {
-        // Try starting Face Detection
-        Camera.Parameters params = mCamera.getParameters();
-        //mCamera.startFaceDetection();
-        // start face detection only *after* preview has started
-        int x = params.getMaxNumDetectedFaces();
-        Log.i("params.getMaxedFaces()", Integer.toString(x));
-        if (params.getMaxNumDetectedFaces() > 0) {
-
-            // camera supports face detection, so can start it:
-            Log.d("face dection", "started");
-            mCamera.startFaceDetection();
-        }else{
-            Log.d("face detection", "max faces = 0, so it can't detect faces");
-        }
-    }
-
-    //http://stackoverflow.com/questions/2232238/how-to-bring-an-activity-to-foreground-top-of-stack
-    private static Intent getIntent(Context context, Class<?> cls){
-        Intent intent = new Intent(context, cls);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        return intent;
-    }
     protected void onPause(){
         Log.i("test","pause ping");
         super.onPause();
