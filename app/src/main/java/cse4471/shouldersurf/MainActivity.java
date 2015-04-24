@@ -69,8 +69,9 @@ public class MainActivity extends ActionBarActivity {
         PackageManager pm = getPackageManager();
         List<ApplicationInfo> applications = pm.getInstalledApplications(flags);
         String listPkg = "";
+
         for (ApplicationInfo appInfo : applications) {
-            listPkg = listPkg + appInfo.toString() + "\r\n";
+            listPkg = listPkg + appInfo.processName + "\r\n";
         }
 
 
