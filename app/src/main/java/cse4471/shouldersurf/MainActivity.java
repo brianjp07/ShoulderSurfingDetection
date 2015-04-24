@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -105,6 +106,7 @@ public class MainActivity extends ActionBarActivity {
                         if (!watchedApps.contains(textBoxContents)) {
                             watchedApps.add(editText.getText().toString());
                         }
+                        Log.i("added process ",textBoxContents+" to watched apps");
 
                     }
                 });
@@ -293,6 +295,11 @@ public class MainActivity extends ActionBarActivity {
 
         // notificationID allows you to update the notification later on.
         mNotificationManager.notify(1, mBuilder.build());
+        Context context = getApplicationContext();
+        String toastString = "flagged app";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context,toastString,duration);
+        toast.show();
 
     }
 
