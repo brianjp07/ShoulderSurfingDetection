@@ -114,7 +114,7 @@ public class MainActivity extends ActionBarActivity {
                 //Log.d(x,"current app is:");
 
             }
-        }, 0, 20, TimeUnit.SECONDS);
+        }, 0, 10, TimeUnit.SECONDS);
 
 
 
@@ -226,6 +226,7 @@ public class MainActivity extends ActionBarActivity {
                         Log.i("hello", "hello");
                         startFaceDetection();
                         Log.i("hola", "hola");
+                            Thread.sleep(1000);
 
                     }catch(Exception e){
 
@@ -300,7 +301,7 @@ public class MainActivity extends ActionBarActivity {
         // this is to show a toast
         mNotificationManager.notify(1, mBuilder.build());
         Context context = getApplicationContext();
-       
+
     }
 
 
