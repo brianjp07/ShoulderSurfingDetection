@@ -322,7 +322,9 @@ public class MainActivity extends ActionBarActivity {
         try {
 
             c = Camera.open(0); // attempt to get a Camera instance
+            Log.i("attempting"," to make FDL");
             c.setFaceDetectionListener(new FDListener());
+            Log.i("FDL"," was initialized");
 
         } catch (Exception e) {
             // Camera is not available (in use or does not exist)
