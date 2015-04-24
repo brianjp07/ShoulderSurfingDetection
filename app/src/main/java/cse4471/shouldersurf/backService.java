@@ -26,7 +26,8 @@ public class backService extends Service {
     public int onStartCommand(Intent intent, int flags, int startID){
 
         ArrayList<String> watchedApps = intent.getStringArrayListExtra("KEY1");
-        MainActivity.getCurrentAppAndHandle(watchedApps);
+        MainActivity main = new MainActivity();
+        main.getCurrentAppAndHandle(watchedApps);
         return 0;
     }
 
