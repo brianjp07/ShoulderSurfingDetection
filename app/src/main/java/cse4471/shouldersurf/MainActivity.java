@@ -219,6 +219,12 @@ public class MainActivity extends ActionBarActivity {
                         mCamera.setPreviewDisplay(holder);
                         SurfaceTexture texture = new SurfaceTexture(1);
                         mCamera.setPreviewTexture(texture);
+                        mCamera.setPreviewCallback(new Camera.PreviewCallback() {
+                            @Override
+                            public void onPreviewFrame(byte[] data, Camera camera) {
+                                startFaceDetection();
+                            }
+                        });
                         mCamera.startPreview();
                         //TODO: why are there so many startFaceDetections?
                         //ANSWER: startFaceDetection has a thing in it to check if it's already running,
