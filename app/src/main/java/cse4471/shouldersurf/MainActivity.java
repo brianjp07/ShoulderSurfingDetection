@@ -279,7 +279,7 @@ public class MainActivity extends ActionBarActivity {
         Camera c = null;
         try {
 
-            c = Camera.open(0); // attempt to get a Camera instance
+            c = Camera.open(cameraId); // attempt to get a Camera instance
             c.setFaceDetectionListener(new FDListener());
 
         } catch (Exception e) {
