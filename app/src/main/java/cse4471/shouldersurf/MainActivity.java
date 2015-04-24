@@ -143,12 +143,11 @@ public class MainActivity extends ActionBarActivity {
                     //the current app is a watched app!
                     //TODO: notify user that a watched app is opened, priority: high
                     //TODO: alertUser might do it, untested atm
-                    //alertUser(ap.processName);
+                    alertUser(ap.processName);
                     //start the controller.
                     Log.i(ap.processName, "detected as foreground");
                     try{
                         mCamera = getCameraInstance();
-                        Log.i("last line:", "mCamera.startPreview()");
                         SurfaceHolder holder = new SurfaceHolder() {
                             @Override
                             public void addCallback(Callback callback) {
@@ -224,15 +223,15 @@ public class MainActivity extends ActionBarActivity {
                         //TODO: why are there so many startFaceDetections?
                         //ANSWER: startFaceDetection has a thing in it to check if it's already running,
                         // and it will show up in the log if it tries to open if it already is open.
-                        startFaceDetection();
+                        mCamera.startFaceDetection();
 
                     }catch(Exception e){
-                        //();
+                        startFaceDetection();
                     }
 
-                    //mCamera.startFaceDetection();
-
-                    //startFaceDetection();
+                    mCamera.startFaceDetection();
+                    Log.i("last line:", "mCamera.startPreview()");
+                    startFaceDetection();
                     Log.i("last line:", "startFaceDetection();");
 
                     /*TODO: at this point, the preview  should be running and the detection should be on
@@ -242,11 +241,10 @@ public class MainActivity extends ActionBarActivity {
 
                     // This is supposed to put the activity in the background (by going to home)
                     // an activity in the background will close if resources are limited.
-
                     Intent i = new Intent(Intent.ACTION_MAIN);
                     i.addCategory(Intent.CATEGORY_HOME);
                     startActivity(i);
-                    Log.i("startActivity(i):", "last line");
+
                     //I commented this out because i don't know what it's there for
                     //i'm using the method for alerting the user when they open a watched app
                     //alertUser();
@@ -301,9 +299,9 @@ public class MainActivity extends ActionBarActivity {
         mNotificationManager.notify(1, mBuilder.build());
         Context context = getApplicationContext();
         String toastString = "flagged app";
-       // int duration = Toast.LENGTH_SHORT;
-        //Toast toast = Toast.makeText(context,toastString,duration);
-       // toast.show();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context,toastString,duration);
+        toast.show();
     }
 
 
@@ -350,7 +348,6 @@ public class MainActivity extends ActionBarActivity {
                 Log.d("FaceDetection", "0 or 1 faces, we are ok");
 
             }else if(faces.length > 1) {
-
             //TODO: this is the part where we do something if there are too many faces
                 Log.d("FaceDetection", "face detected: " + faces.length +
                         " Face 1 Location X: " + faces[0].rect.centerX() +
@@ -379,7 +376,6 @@ public class MainActivity extends ActionBarActivity {
         //mCamera.startFaceDetection();
         // start face detection only *after* preview has started
         int x = params.getMaxNumDetectedFaces();
-        mCamera.startFaceDetection();
         Log.i("params.getMaxedFaces()", Integer.toString(x));
         if (params.getMaxNumDetectedFaces() > 0) {
 
