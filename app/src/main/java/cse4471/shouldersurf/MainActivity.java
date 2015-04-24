@@ -393,9 +393,12 @@ public class MainActivity extends ActionBarActivity {
         return intent;
     }
     protected void onPause(){
-
         Log.i("test","pause ping");
+        super.onPause();
     }
 
+    protected void onResume(){
+        Log.i("test","resume ping");
+    }
 
 }
