@@ -54,12 +54,14 @@ public class MainActivity extends ActionBarActivity {
 // http://stackoverflow.com/questions/2695746/how-to-get-a-list-of-installed-android-applications-and-pick-one-to-run
         final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        //this is a list of packages
         final List pkgAppsList = this.getPackageManager().queryIntentActivities( mainIntent, 0);
+        //find out how many apps there are
         int numPkg = pkgAppsList.size();
+        // make a string for the textBox
         String listPkg = "";
         for (int i = 0; i < numPkg; i++){
             listPkg = listPkg + pkgAppsList.get(i).toString() + "\r\n";
-
         }
         listView.setText(listPkg);
 
