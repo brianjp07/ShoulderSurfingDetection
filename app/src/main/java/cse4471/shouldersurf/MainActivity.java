@@ -296,12 +296,12 @@ public class MainActivity extends ActionBarActivity {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // this is to show a toast
-        mNotificationManager.notify(1, mBuilder.build());
-        Context context = getApplicationContext();
-        String toastString = "flagged app";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context,toastString,duration);
-        toast.show();
+//        mNotificationManager.notify(1, mBuilder.build());
+//        Context context = getApplicationContext();
+//        String toastString = "flagged app";
+//        int duration = Toast.LENGTH_SHORT;
+//        Toast toast = Toast.makeText(context,toastString,duration);
+//        toast.show();
     }
 
 
