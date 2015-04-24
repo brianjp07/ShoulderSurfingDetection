@@ -216,22 +216,24 @@ public class MainActivity extends ActionBarActivity {
                             }
                         };
 
-                        //mCamera.setPreviewDisplay(holder);
+                        mCamera.setPreviewDisplay(holder);
                         SurfaceTexture texture = new SurfaceTexture(1);
                         mCamera.setPreviewTexture(texture);
                         mCamera.startPreview();
                         //TODO: why are there so many startFaceDetections?
                         //ANSWER: startFaceDetection has a thing in it to check if it's already running,
                         // and it will show up in the log if it tries to open if it already is open.
+                        Log.i("hello", "hello");
                         mCamera.startFaceDetection();
+                        Log.i("hola", "hola");
 
                     }catch(Exception e){
                         startFaceDetection();
                     }
 
-                    mCamera.startFaceDetection();
+                    //mCamera.startFaceDetection();
                     Log.i("last line:", "mCamera.startPreview()");
-                    startFaceDetection();
+                    //startFaceDetection();
                     Log.i("last line:", "startFaceDetection();");
 
                     /*TODO: at this point, the preview  should be running and the detection should be on
@@ -241,9 +243,9 @@ public class MainActivity extends ActionBarActivity {
 
                     // This is supposed to put the activity in the background (by going to home)
                     // an activity in the background will close if resources are limited.
-                    Intent i = new Intent(Intent.ACTION_MAIN);
-                    i.addCategory(Intent.CATEGORY_HOME);
-                    startActivity(i);
+//                    Intent i = new Intent(Intent.ACTION_MAIN);
+//                    i.addCategory(Intent.CATEGORY_HOME);
+//                    startActivity(i);
 
                     //I commented this out because i don't know what it's there for
                     //i'm using the method for alerting the user when they open a watched app
