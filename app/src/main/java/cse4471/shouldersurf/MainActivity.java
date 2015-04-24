@@ -9,6 +9,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
@@ -59,9 +60,12 @@ public class MainActivity extends ActionBarActivity {
         //find out how many apps there are
         int numPkg = pkgAppsList.size();
         // make a string for the textBox
+
         String listPkg = "";
         for (int i = 0; i < numPkg; i++){
-            listPkg = listPkg + pkgAppsList.get(i).toString() + "\r\n";
+            ResolveInfo info = (ResolveInfo) pkgAppsList.get(i);
+            String temp = info.resolvePackageName;
+            listPkg = listPkg + temp + "\r\n";
         }
         listView.setText(listPkg);
 
