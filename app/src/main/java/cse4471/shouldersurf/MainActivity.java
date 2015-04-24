@@ -224,11 +224,11 @@ public class MainActivity extends ActionBarActivity {
                         //ANSWER: startFaceDetection has a thing in it to check if it's already running,
                         // and it will show up in the log if it tries to open if it already is open.
                         Log.i("hello", "hello");
-                        mCamera.startFaceDetection();
+                        startFaceDetection();
                         Log.i("hola", "hola");
 
                     }catch(Exception e){
-                        startFaceDetection();
+
                     }
 
                     //mCamera.startFaceDetection();
@@ -300,10 +300,7 @@ public class MainActivity extends ActionBarActivity {
         // this is to show a toast
         mNotificationManager.notify(1, mBuilder.build());
         Context context = getApplicationContext();
-        String toastString = "flagged app";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context,toastString,duration);
-        toast.show();
+       
     }
 
 
