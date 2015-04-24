@@ -285,6 +285,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void alertUser(String watchedApp) {
 
+        //this is to show a notification
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.generic_icon)
@@ -293,14 +294,13 @@ public class MainActivity extends ActionBarActivity {
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // notificationID allows you to update the notification later on.
+        // this is to show a toast
         mNotificationManager.notify(1, mBuilder.build());
         Context context = getApplicationContext();
         String toastString = "flagged app";
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context,toastString,duration);
         toast.show();
-
     }
 
 
@@ -368,6 +368,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
     }
 
+
     public void startFaceDetection() {
         // Try starting Face Detection
         Camera.Parameters params = mCamera.getParameters();
@@ -390,6 +391,10 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(context, cls);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         return intent;
+    }
+    protected void onPause(){
+
+        Log.i("test","pause ping");
     }
 
 
