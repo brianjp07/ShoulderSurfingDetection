@@ -399,6 +399,7 @@ public class MainActivity extends ActionBarActivity {
 
     protected void onResume(){
         Log.i("test","resume ping");
+        super.onResume();
     }
 
 }
